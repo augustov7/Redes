@@ -41,7 +41,7 @@ void  to_binary(int *result_binary,int result_decimal[80], int *size){
 		}
 		result_binary[i+1] = result;
 	}
-	/* IMPRIME BINARIOS
+	/* IMPRIME BINARIOS*
 	for (i = 0; i <= *size; i++)
 	{
 		printf("%d ", result_binary[i]);
@@ -53,10 +53,8 @@ void print_output(ppp *frames){
 
 	//ppp *lst = frames;
 
-	printf("saida: ");
-
 	while(frames != NULL){
-		printf("%s \n", frames->bits);
+		printf("%s ", frames->bits);
 		frames = frames->prox;
 	}
 
@@ -86,13 +84,19 @@ char* to_char(int inteiro){
 void build_payload(ppp **lst, char *value){
 
 	ppp *new = (ppp *) malloc(sizeof(ppp));
+	//ppp *p;
 
 	new->prox = NULL;
+	
+	//printf("P: %s\n", p->bits);
 
 	(*lst)->prox = new;
 
 	strcpy(new->bits,value);
-	//printf("%s\n", value);
+
+	(*lst)->prox = new;
+
+	//printf("%s ", (*lst)->bits);
 
 	*lst = (*lst)->prox;
 
@@ -126,29 +130,26 @@ void build_frame(int *result_binary, ppp *frames, int size){
 	//printf("control %s\n", control->bits);
 
 	lst = control;
+//	puts("--");
 
-	for (i = 0; i < size; ++i){
+	for (i = 1; i <= size; i++){
 		//printf("Dentro do vetor: %d \n", result_binary[i]);
 		//printf("%s ",to_char(result_binary[i]));
 		
 		build_payload(&lst,to_char(result_binary[i]));
-		printf("%s\n", lst->bits);
-
-		//printf(" -- for --\n");
-		getch();
+		
 	}
 
-	control->prox = flag2;
+	printf("saida: %s ", lst->bits);	
+
+	lst->prox = flag2;
 
 	//flag2->bits = {'0','1','1','1''1','1','1','0'};	
-	//strcpy(flag2->bits,"01111110");
+	strcpy(flag2->bits,"01111110");
 	flag2->prox = NULL;
-
+	//puts("--");
 	print_output(frames);
-
-
 }
-
 
 
 int main(void){
