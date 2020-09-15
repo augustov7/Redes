@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+	gcc atividade04-parte1.c -o exec -pedantic -Wall
+
+*/
+
 typedef struct ppp{
 	char bits[9];
 	struct ppp *prox;
@@ -51,8 +56,6 @@ void  to_binary(int *result_binary,int result_decimal[80], int *size){
 
 void print_output(ppp *frames){
 
-	//ppp *lst = frames;
-
 	while(frames != NULL){
 		printf("%s ", frames->bits);
 		frames = frames->prox;
@@ -62,7 +65,6 @@ void print_output(ppp *frames){
 
 char* to_char(int inteiro){
 	int i;
-	//char result[9];
 	char* result = (char*) malloc(9 * sizeof(char));
 
 	result[8] = '\0';
@@ -84,22 +86,96 @@ char* to_char(int inteiro){
 void build_payload(ppp **lst, char *value){
 
 	ppp *new = (ppp *) malloc(sizeof(ppp));
-	//ppp *p;
 
 	new->prox = NULL;
 	
-	//printf("P: %s\n", p->bits);
-
 	(*lst)->prox = new;
 
 	strcpy(new->bits,value);
 
 	(*lst)->prox = new;
 
-	//printf("%s ", (*lst)->bits);
-
 	*lst = (*lst)->prox;
 
+}
+
+void checksum(ppp *payload){
+	int i, carry;
+	char result[8];
+	ppp *aux = payload->prox;
+
+	while(payload != NULL){
+
+		if(payload->prox == NULL){
+
+		}else{
+
+			printf("payload: %s\n", payload->bits);
+			printf("    aux: %s\n", aux->bits);
+
+			puts("---------------------------------");
+
+			carry = 0;
+			result[8] = '\0';
+
+			for(i = 7; i >= 0 ; i--){
+
+				printf("payload[%d]: %c\n", i, payload->bits[i]);
+				printf("    aux[%d]: %c\n", i, aux->bits[i]);
+				printf("    aux: %c%c%c%c\n", aux->bits[0],aux->bits[1],aux->bits[2],aux->bits[3]);
+
+
+				if (payload->bits[i] == '1'){
+					if (aux->bits[i] == '1'){
+						if (carry == 1){
+							result[i] = '1';
+							carry = 1;
+						}else{
+							result[i] = '0';
+							carry = 1;
+						}					
+						
+					}else{
+						if (carry == 1){
+							result[i] = '0';
+							carry = 1;
+						}else{
+							result[i] = '1';
+							carry = 0;
+						}
+					}
+				}else{
+					if (aux->bits[i] == 1){
+						if (carry == 1){
+							result[i] = '0';
+							carry = 1;
+						}else{
+							result[i] = '1';
+							carry = 0;
+						}
+					}else{
+						if (carry == 1){
+							result[i] = '1';
+							carry = 0;
+						}else{
+							result[i] = '0';
+							carry = 0;
+						}
+					}
+				}
+			}
+
+			getch();
+		}
+
+		printf(" result: %s\n\n", result);
+
+		//printf("check: %s\n", payload->bits);
+
+		payload = payload->prox;
+		aux = payload->prox;
+	}
+	getch();
 }
 
 
@@ -110,44 +186,35 @@ void build_frame(int *result_binary, ppp *frames, int size){
 	ppp *flag2 = (ppp *) malloc(sizeof(ppp));
 	ppp *address = (ppp *) malloc(sizeof(ppp));
 	ppp *control = (ppp *) malloc(sizeof(ppp));
-	ppp *lst;
-	//ppp *protocol = (ppp *) malloc(sizeof(ppp));
+	ppp *lst;//, *check;
 
 	frames = flag1;
-	//char teste[15] = ;
 
 	strcpy(flag1->bits,"01111110");
 	flag1->prox = address;
-	//printf("flag1 %s\n", flag1->bits);
-	//address->bits = {'1','1','1','1''1','1','1','1'};
 	strcpy(address->bits,"11111111");
-	//printf("address %s\n", address->bits);
 	address->prox = control;
 
-	//control->bits = {'0','0','0','0''0','0','0','1'};
 	strcpy(control->bits,"00000001");
 	control->prox = NULL;
-	//printf("control %s\n", control->bits);
 
 	lst = control;
-//	puts("--");
+
 
 	for (i = 1; i <= size; i++){
-		//printf("Dentro do vetor: %d \n", result_binary[i]);
-		//printf("%s ",to_char(result_binary[i]));
 		
 		build_payload(&lst,to_char(result_binary[i]));
 		
 	}
 
-	printf("saida: %s ", lst->bits);	
+	checksum(control->prox);
+
+	printf("saida: %s ", lst->bits);
 
 	lst->prox = flag2;
-
-	//flag2->bits = {'0','1','1','1''1','1','1','0'};	
+	
 	strcpy(flag2->bits,"01111110");
 	flag2->prox = NULL;
-	//puts("--");
 	print_output(frames);
 }
 
@@ -157,11 +224,14 @@ int main(void){
 	int result_decimal[1500];
 	int result_binary[1500];
 	int size;
+	char p[4];
 	char m[1500];
+	
+
 
 	ppp *frames;
 
-	scanf(" %s", m);
+	scanf("%s %s", p, m);
 
 	to_decimal(result_decimal,m,&size);	
 
