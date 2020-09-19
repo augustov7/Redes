@@ -1,16 +1,80 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 /*
 	gcc atividade04-parte1.c -o exec -pedantic -Wall
-
 */
 
 typedef struct ppp{
 	char bits[9];
 	struct ppp *prox;
-}ppp;	
+}ppp;
+
+int hexadecimal(){
+
+	char hex[4];
+	int num, i = 0, aux = 0, result = 0;
+	scanf("%s", hex);
+
+	i = strlen(hex);
+	
+	i--;
+	printf("i: %d\n", i);
+	while (i >= 0)
+	{
+		if (hex[i] == 65)
+		{
+			result += 10 * pow(16, aux);
+		}
+		else
+		{
+
+			if (hex[i] == 66)
+			{
+				result += 11 * pow(16, aux);
+			}
+			else
+			{
+				if (hex[i] == 67)
+				{
+					result += 12 * pow(16, aux);
+
+				}else{
+					if (hex[i] == 68)
+					{
+						result += 13 * pow(16, aux);
+					}else{
+						if (hex[i] == 69)
+						{
+							result += 14 * pow(16, aux);
+						}else{
+							if (hex[i] == 70)
+							{
+								result += 14 * pow(16, aux);
+							}else{
+								if (hex[i] == 71)
+								{
+									result += 15 * pow(16, aux);
+								}else{
+									num = hex[i] - '0';
+									result += num * pow(16, aux);
+								}
+							} 
+						}
+					}
+				}
+			}
+		}
+		aux++;
+		i--;
+	}
+
+	return result;
+
+}
+	
 
 void  to_decimal(int *result_decimal,char mensage[80], int *size){
 	int i;
@@ -46,12 +110,6 @@ void  to_binary(int *result_binary,int result_decimal[80], int *size){
 		}
 		result_binary[i+1] = result;
 	}
-	/* IMPRIME BINARIOS*
-	for (i = 0; i <= *size; i++)
-	{
-		printf("%d ", result_binary[i]);
-	}*/
-
 }
 
 void print_output(ppp *frames){
@@ -80,7 +138,7 @@ char* to_char(int inteiro){
 	}	
 
 	return result;
-	
+
 }
 
 void build_payload(ppp **lst, char *value){
@@ -88,7 +146,7 @@ void build_payload(ppp **lst, char *value){
 	ppp *new = (ppp *) malloc(sizeof(ppp));
 
 	new->prox = NULL;
-	
+
 	(*lst)->prox = new;
 
 	strcpy(new->bits,value);
@@ -134,7 +192,7 @@ void checksum(ppp *payload){
 							result[i] = '0';
 							carry = 1;
 						}					
-						
+
 					}else{
 						if (carry == 1){
 							result[i] = '0';
@@ -164,18 +222,14 @@ void checksum(ppp *payload){
 					}
 				}
 			}
-
-			getch();
 		}
 
 		printf(" result: %s\n\n", result);
 
-		//printf("check: %s\n", payload->bits);
 
 		payload = payload->prox;
 		aux = payload->prox;
 	}
-	getch();
 }
 
 
@@ -186,7 +240,7 @@ void build_frame(int *result_binary, ppp *frames, int size){
 	ppp *flag2 = (ppp *) malloc(sizeof(ppp));
 	ppp *address = (ppp *) malloc(sizeof(ppp));
 	ppp *control = (ppp *) malloc(sizeof(ppp));
-	ppp *lst;//, *check;
+	ppp *lst;
 
 	frames = flag1;
 
@@ -226,6 +280,9 @@ int main(void){
 	int size;
 	char p[4];
 	char m[1500];
+
+
+	hexadecimal();
 	
 
 
@@ -239,6 +296,5 @@ int main(void){
 
 	build_frame(result_binary,frames,size);
 
-	getch();
-
 }
+
