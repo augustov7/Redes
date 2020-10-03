@@ -21,7 +21,6 @@ int hexadecimal(){
 	i = strlen(hex);
 	
 	i--;
-	printf("i: %d\n", i);
 	while (i >= 0)
 	{
 		if (hex[i] == 65)
@@ -74,7 +73,7 @@ int hexadecimal(){
 	return result;
 
 }
-	
+
 
 void  to_decimal(int *result_decimal,char mensage[80], int *size){
 	int i;
@@ -86,12 +85,13 @@ void  to_decimal(int *result_decimal,char mensage[80], int *size){
 	*size = i;
 }
 
+
 void  to_binary(int *result_binary,int result_decimal[80], int *size){
 
 	int aux = *size, result = 0, j = 1, i;
 
 	while(aux != 0){
-		result += j * (aux % 2);			
+		result += j * (aux % 2);
 		j = j * 10;
 		aux = aux/2;
 	}
@@ -138,7 +138,57 @@ char* to_char(int inteiro){
 	}	
 
 	return result;
+}
 
+ppp* to_char2(int inteiro){/*ESPERA UM NUMERO INTEIRO DE ZEROS E UNS E TRANSFORMA NO MESMO NUMERO MAS COM ZEROS A ESQUERDA*/
+int i;
+char result[9];
+ppp *protocol1 = (ppp *) malloc(sizeof(ppp));
+ppp *protocol2 = (ppp *) malloc(sizeof(ppp));
+
+result[8] = '\0';
+
+for (i = 7; i >= 0; i--){	
+	
+	if (inteiro == 0){
+		result[i] = 48;
+	}else{
+
+		if(inteiro % 2 == 1){
+			result[i] = 49;
+		}else{
+			result[i] = 48;
+		}
+		
+		inteiro = inteiro/2;
+	}
+}	
+
+strcpy(protocol2->bits,result);
+
+
+for (i = 7; i >= 0; i--){	
+	
+	if (inteiro == 0){
+		result[i] = 48;
+	}else{
+
+		if(inteiro % 2 == 1){
+			result[i] = 49;
+		}else{
+			result[i] = 48;
+		}
+		
+		inteiro = inteiro/2;
+	}
+}	
+
+strcpy(protocol1->bits,result);
+
+protocol1->prox = protocol2;
+protocol2->prox = NULL;
+
+return protocol1;
 }
 
 void build_payload(ppp **lst, char *value){
@@ -168,20 +218,10 @@ void checksum(ppp *payload){
 
 		}else{
 
-			printf("payload: %s\n", payload->bits);
-			printf("    aux: %s\n", aux->bits);
-
-			puts("---------------------------------");
-
 			carry = 0;
 			result[8] = '\0';
 
 			for(i = 7; i >= 0 ; i--){
-
-				printf("payload[%d]: %c\n", i, payload->bits[i]);
-				printf("    aux[%d]: %c\n", i, aux->bits[i]);
-				printf("    aux: %c%c%c%c\n", aux->bits[0],aux->bits[1],aux->bits[2],aux->bits[3]);
-
 
 				if (payload->bits[i] == '1'){
 					if (aux->bits[i] == '1'){
@@ -224,7 +264,6 @@ void checksum(ppp *payload){
 			}
 		}
 
-		printf(" result: %s\n\n", result);
 
 
 		payload = payload->prox;
@@ -233,7 +272,7 @@ void checksum(ppp *payload){
 }
 
 
-void build_frame(int *result_binary, ppp *frames, int size){
+void build_frame(int *result_binary, ppp *frames, int size, int hexa){
 
 	int i;
 	ppp *flag1 = (ppp *) malloc(sizeof(ppp));
@@ -249,10 +288,11 @@ void build_frame(int *result_binary, ppp *frames, int size){
 	strcpy(address->bits,"11111111");
 	address->prox = control;
 
-	strcpy(control->bits,"00000001");
-	control->prox = NULL;
+	strcpy(control->bits,"00000011");
+	
+	control->prox = to_char2(hexa);
 
-	lst = control;
+	lst = (control->prox)->prox;
 
 
 	for (i = 1; i <= size; i++){
@@ -261,9 +301,7 @@ void build_frame(int *result_binary, ppp *frames, int size){
 		
 	}
 
-	checksum(control->prox);
-
-	printf("saida: %s ", lst->bits);
+	printf("%s ", lst->bits);
 
 	lst->prox = flag2;
 	
@@ -278,23 +316,21 @@ int main(void){
 	int result_decimal[1500];
 	int result_binary[1500];
 	int size;
-	char p[4];
 	char m[1500];
+	int hexa;
 
 
-	hexadecimal();
-	
-
+	hexa = hexadecimal();
 
 	ppp *frames;
 
-	scanf("%s %s", p, m);
+	scanf("%s", m);
 
 	to_decimal(result_decimal,m,&size);	
 
 	to_binary(result_binary,result_decimal,&size);
 
-	build_frame(result_binary,frames,size);
+	build_frame(result_binary,frames,size,hexa);
+
 
 }
-
