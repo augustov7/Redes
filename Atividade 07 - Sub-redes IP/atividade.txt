@@ -11,6 +11,9 @@ para descobrir a sub-rede é feita um & logico da mascara com o endereço Exempl
 11001000 10011010 00001010 00000000 	RESULTADO = Rede
 
 cada bit 1 da mascara corresponde aos digitos do IP que representa a rede.
+O Restante é destinado a aos hosts, então fica da seguinte forma:
+	       Rede			  |  hosts
+11001000 10011010 00001010  00000000 
 
 
 
@@ -25,3 +28,37 @@ Nesse exemplo seria a mascara para uma rede, para criarmos uma subrede nos mudam
 11001000 10011010 00001010 10110010	 	200.154.10.178 - IP
 -----------------------------------------------------------------------------
 11001000 10011010 00001010 10000000 	RESULTADO = Sub-rede
+
+
+
+
+
+aqui temos um exemplo de como identificar se dois endereços(200.154.100.63/27, 200.154.100.20/27) pertencem a mesma rede
+
+11111111 11111111 11111111 11100000    = 255.255.255.224 /27
+
+11001000 10011010 01100100 00111111    = 200.154.100.63/27						   
+						       
+11001000 10011010 01100100 00100000	   = 200.154.100.20/27
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+172.16.28.15
+
+11111111 11111111 11110000 00000000
+10101100 00010000 00011100
+      
