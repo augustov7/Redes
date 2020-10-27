@@ -1,0 +1,27 @@
+Uma rede composta por sub-redes foi uma forma para diminuir o uso dos endereços e simplificar encaminhamentos para os hosts.
+
+Isso é feito usando uma outra faixa de IP que representa a mascara da rede, essa que contem as informaçoes necessárias para descobrir as subredes correspondentes.
+Exemplos de mascaras 255.255.255.0 255.255.128.0 255.255.255.128
+
+para descobrir a sub-rede é feita um & logico da mascara com o endereço Exemplo:
+
+11111111 11111111 11111111 00000000		255.255.255.0 - Mascara /24
+11001000 10011010 00001010 10110010	 	200.154.10.178 - IP
+-----------------------------------------------------------------------------
+11001000 10011010 00001010 00000000 	RESULTADO = Rede
+
+cada bit 1 da mascara corresponde aos digitos do IP que representa a rede.
+
+
+
+Nesse exemplo seria a mascara para uma rede, para criarmos uma subrede nos mudamos a mascara acrecentando mais possibilidades de separação da rede, porém com cada vez menos hosts, um exemplo de sub-rede da rede anterios seria:
+
+11111111 11111111 11111111 10000000		255.255.255.0 - Mascara /25
+11001000 10011010 00001010 10110010	 	200.154.10.178 - IP
+-----------------------------------------------------------------------------
+11001000 10011010 00001010 10000000 	RESULTADO = Sub-rede
+
+11111111 11111111 11111111 11000000		255.255.255.0 - Mascara /26
+11001000 10011010 00001010 10110010	 	200.154.10.178 - IP
+-----------------------------------------------------------------------------
+11001000 10011010 00001010 10000000 	RESULTADO = Sub-rede

@@ -44,9 +44,7 @@ int main(void){
 
 
 	scanf("%d", &n);
-	/*
-		Faltou colocar os resultados em uma matriz e mostra-los todos apenas no no final :(
-	*/
+	
 
 	while(n > 0){
 
@@ -163,6 +161,7 @@ int main(void){
 									if (strcmp(op,"jal") == 0){
 										to_binary(6,3);
 										to_binary(26,16777212);
+										
 									}else{
 										if (strcmp(op,"j") == 0){
 											to_binary(6,2);
